@@ -1,5 +1,6 @@
 package com.example.api_techbWeb_robin.controllers;
 
+import com.example.api_techbWeb_robin.dtos.UserRequestDTO;
 import com.example.api_techbWeb_robin.models.RegisterRequest;
 import com.example.api_techbWeb_robin.models.User;
 import com.example.api_techbWeb_robin.services.UserService;
@@ -60,7 +61,7 @@ public class UserController {
 
     // Mise à jour d'un utilisateur
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userDetails) {
         try {
             Optional<User> updatedUser = userService.updateUser(id, userDetails);
             return updatedUser.map(ResponseEntity::ok)
@@ -68,6 +69,7 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("error", "Erreur interne."));
         }
     }

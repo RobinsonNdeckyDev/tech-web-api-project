@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 "/api/files/**"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/roles/**").hasAuthority("SUPER_ADMIN")
+                        .requestMatchers("/api/roles/**").hasAuthority("SUPER_ADMIN") // <-- TOUTES les méthodes HTTP sur /roles/**
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

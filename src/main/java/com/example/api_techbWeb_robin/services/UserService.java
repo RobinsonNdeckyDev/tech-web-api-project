@@ -1,5 +1,6 @@
 package com.example.api_techbWeb_robin.services;
 
+import com.example.api_techbWeb_robin.dtos.UserRequestDTO;
 import com.example.api_techbWeb_robin.models.Role;
 import com.example.api_techbWeb_robin.models.User;
 import com.example.api_techbWeb_robin.repository.RoleRepository;
@@ -69,24 +70,34 @@ public class UserService {
     }
 
     // Modifier un utilisateur
-    public Optional<User> updateUser(Long id, User userDetails) {
+    public Optional<User> updateUser(Long id, UserRequestDTO userDetails) {
         return userRepository.findById(id).map(user -> {
             if (!user.getEmail().equals(userDetails.getEmail())
                     && userRepository.existsByEmail(userDetails.getEmail())) {
                 throw new IllegalArgumentException("Cet email est déjà utilisé par un autre utilisateur.");
             }
+
             user.setNom(userDetails.getNom());
             user.setPrenom(userDetails.getPrenom());
             user.setEmail(userDetails.getEmail());
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-            user.setRole(userDetails.getRole());
+            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+            }
+            if (userDetails.getRoleId() != null) {
+                Role role = roleRepository.findById(userDetails.getRoleId())
+                        .orElseThrow(() -> new IllegalArgumentException("Role non trouvé"));
+                user.setRole(role);
+            }
             user.setTelephone(userDetails.getTelephone());
             user.setAdresse(userDetails.getAdresse());
             user.setDescription(userDetails.getDescription());
             user.setPhotoProfil(userDetails.getPhotoProfil());
+
             return userRepository.save(user);
         });
     }
+
+
 
     // Supprimer un utilisateur
     public void deleteUser(Long id) {

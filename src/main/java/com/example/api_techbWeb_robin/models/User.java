@@ -13,7 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data @NoArgsConstructor
+@Data
+@NoArgsConstructor
 public class User extends Auditable implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
